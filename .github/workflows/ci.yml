@@ -1,0 +1,100 @@
+name: GCS - Testes e Builds
+
+# Toda alteração passa pelos mesmos controles, independentemente da equipe.
+on:
+  push:
+    branches: [main, develop, 'feature/**', 'fix/**']
+    tags: ['v*']
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gcs-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    name: Front-end - teste e build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar código versionado
+        uses: actions/checkout@v7
+      - name: Preparar Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Testar front-end
+        run: npm --prefix frontend test
+      - name: Gerar build do front-end
+        run: npm --prefix frontend run build
+      - name: Publicar artefato do front-end
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-${{ github.sha }}
+          path: frontend/dist/
+          if-no-files-found: error
+          retention-days: 14
+
+  backend:
+    name: Back-end - teste e build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar código versionado
+        uses: actions/checkout@v7
+      - name: Preparar Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Testar API e adoções
+        run: npm --prefix backend test
+      - name: Gerar build do back-end
+        run: npm --prefix backend run build
+      - name: Publicar artefato do back-end
+        uses: actions/upload-artifact@v7
+        with:
+          name: backend-${{ github.sha }}
+          path: backend/dist/
+          if-no-files-found: error
+          retention-days: 14
+
+  integracao:
+    name: Integração - smoke test e pacote final
+    needs: [frontend, backend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar workflow e teste de integração
+        uses: actions/checkout@v7
+      - name: Preparar Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Recuperar build do front-end
+        uses: actions/download-artifact@v8
+        with:
+          name: frontend-${{ github.sha }}
+          path: pacote/frontend
+      - name: Recuperar build do back-end
+        uses: actions/download-artifact@v8
+        with:
+          name: backend-${{ github.sha }}
+          path: pacote/backend
+      - name: Validar a aplicação integrada
+        run: node scripts/smoke.mjs
+        env:
+          BUNDLE_DIR: pacote
+      - name: Incluir instruções no pacote
+        run: cp docs/EXECUTAR_BUILD.md pacote/LEIA-ME.md
+      - name: Publicar pacote completo para avaliação
+        uses: actions/upload-artifact@v7
+        with:
+          name: adota-pet-completo-${{ github.sha }}
+          path: pacote/
+          if-no-files-found: error
+          retention-days: 14

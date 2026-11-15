@@ -1,0 +1,71 @@
+{
+  "pets": [
+    {
+      "id": "8fbbd4f7-4874-41e9-822f-6a0c09ca911a",
+      "name": "Amora",
+      "species": "cao",
+      "age": 2,
+      "city": "Joinville",
+      "description": "Adora passear e brincar. Procura uma família cheia de carinho.",
+      "color": "rose",
+      "status": "disponivel",
+      "createdAt": "2026-11-15T01:51:24.691Z"
+    },
+    {
+      "id": "9514965c-00f8-43ff-9b6d-86bf111c829c",
+      "name": "Nino",
+      "species": "gato",
+      "age": 1,
+      "city": "Joinville",
+      "description": "Curioso, tranquilo e fã de uma boa soneca no sofá.",
+      "color": "lavender",
+      "status": "disponivel",
+      "createdAt": "2026-11-15T01:51:24.691Z"
+    },
+    {
+      "id": "e2076b80-f9cd-409b-9610-93f0187f7f16",
+      "name": "Biscoito",
+      "species": "cao",
+      "age": 3,
+      "city": "Curitiba",
+      "description": "Um companheiro alegre que ama receber atenção.",
+      "color": "peach",
+      "status": "disponivel",
+      "createdAt": "2026-11-15T01:51:24.691Z"
+    },
+    {
+      "id": "63b49a00-32eb-402b-993a-d0bcc1da06b8",
+      "name": "Lua",
+      "species": "gato",
+      "age": 2,
+      "city": "Blumenau",
+      "description": "Carinhosa, gosta de cantinhos ensolarados.",
+      "color": "mint",
+      "status": "disponivel",
+      "createdAt": "2026-11-15T01:51:24.691Z"
+    },
+    {
+      "id": "23e438c2-0e7f-4a48-96c4-974be8609809",
+      "name": "Pipoca",
+      "species": "outro",
+      "age": 1,
+      "city": "Joinville",
+      "description": "Coelhinha gentil e cheia de energia.",
+      "color": "yellow",
+      "status": "disponivel",
+      "createdAt": "2026-11-15T01:51:24.691Z"
+    },
+    {
+      "id": "8f20b9e2-c2dd-402d-a919-de4b0f8d8f29",
+      "name": "Theo",
+      "species": "cao",
+      "age": 4,
+      "city": "Florianópolis",
+      "description": "Calmo e sociável, perfeito para passeios no parque.",
+      "color": "blue",
+      "status": "disponivel",
+      "createdAt": "2026-11-15T01:51:24.691Z"
+    }
+  ],
+  "adoptions": []
+}

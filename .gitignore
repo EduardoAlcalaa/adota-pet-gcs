@@ -1,0 +1,13 @@
+# Arquivos gerados
+**/dist/
+**/node_modules/
+coverage/
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# Dados de execução: não versionar nomes e contatos de adotantes
+backend/data/*.json
+!backend/data/.gitkeep
