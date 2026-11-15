@@ -54,3 +54,22 @@ test('recusa cadastro inválido e ID inexistente', async (t) => {
   const inexistente = await fetch(`${base}/api/pets/00000000-0000-0000-0000-000000000000/adopt`, post({ adopterName: 'Exemplo', adopterContact: 'contato.invalid' }));
   assert.equal(inexistente.status, 404);
 });
+
+
+test('filtra pets por espécie e situação e rejeita filtros inválidos', async (t) => {
+  const { base } = await preparar(t);
+  const gatos = await fetch(`${base}/api/pets?species=gato&status=disponivel`);
+  assert.equal(gatos.status, 200);
+  const { pets } = await gatos.json();
+  assert.equal(pets.length, 2);
+  assert.ok(pets.every((p) => p.species === 'gato' && p.status === 'disponivel'));
+
+  const invalidaEspecie = await fetch(`${base}/api/pets?species=dragao`);
+  assert.equal(invalidaEspecie.status, 400);
+  assert.match((await invalidaEspecie.json()).error, /espécie/i);
+  const invalidaSituacao = await fetch(`${base}/api/pets?status=pendente`);
+  assert.equal(invalidaSituacao.status, 400);
+
+  const semFiltro = await (await fetch(`${base}/api/pets`)).json();
+  assert.equal(semFiltro.pets.length, 6);
+});
