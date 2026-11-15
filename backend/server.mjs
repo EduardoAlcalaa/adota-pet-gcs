@@ -84,11 +84,25 @@ export function criarServidor({ dataFile = DATA_FILE, publicDir = PUBLIC_DIR } =
   return http.createServer(async (req, res) => {
     let pathname;
     try {
-      pathname = new URL(req.url, 'http://localhost').pathname;
+      const endereco = new URL(req.url, 'http://localhost');
+      pathname = endereco.pathname;
       if (req.method === 'GET' && pathname === '/api/health') return responder(res, 200, { status: 'ok' });
       if (req.method === 'GET' && pathname === '/api/pets') {
+        // Filtros opcionais de API: GET /api/pets?species=gato&status=disponivel
+        const species = endereco.searchParams.get('species');
+        const status = endereco.searchParams.get('status');
+        if (species !== null && !['cao', 'gato', 'outro'].includes(species)) {
+          throw new ErroHttp(400, 'Filtro de espécie inválido.');
+        }
+        if (status !== null && !['disponivel', 'adotado'].includes(status)) {
+          throw new ErroHttp(400, 'Filtro de situação inválido.');
+        }
         const dados = await repositorio.ler();
-        return responder(res, 200, { pets: dados.pets });
+        const pets = dados.pets.filter((pet) =>
+          (species === null || pet.species === species) &&
+          (status === null || pet.status === status)
+        );
+        return responder(res, 200, { pets });
       }
       if (req.method === 'GET' && pathname === '/api/adoptions') {
         const dados = await repositorio.ler();
